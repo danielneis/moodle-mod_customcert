@@ -132,6 +132,17 @@ echo $OUTPUT->heading($heading);
 echo $form->display();
 if (isset($result)) {
     $renderer = $PAGE->get_renderer('mod_customcert');
+    if ($result->success) {
+        foreach ($result->issues as $issue) {
+            $params = array(
+                'context' => \context_module::instance($DB->get_field('customcert', 'course', ['id' => $issue->certificateid])),
+                'objectid' => $issue->certificateid,
+                'relateduserid' => $issue->userid
+            );
+            $event = \mod_customcert\event\certificate_verified::create($params);
+            $event->trigger();
+        }
+    }
     $result = new \mod_customcert\output\verify_certificate_results($result);
     echo $renderer->render($result);
 }

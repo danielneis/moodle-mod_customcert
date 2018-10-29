@@ -435,7 +435,17 @@ class certificate {
         $issue->timecreated = time();
 
         // Insert the record into the database.
-        return $DB->insert_record('customcert_issues', $issue);
+        if ($issue->id = $DB->insert_record('customcert_issues', $issue)) {
+            $params = array(
+                'context' => \context_module::instance($DB->get_field('customcert', 'course', ['id' => $certificateid])),
+                'objectid' => $certificateid,
+            );
+            $event = \mod_customcert\event\certificate_issued::create($params);
+            $event->add_record_snapshot('customcert_issues', $issue);
+            $event->trigger();
+        }
+
+        return $issue->id;
     }
 
     /**

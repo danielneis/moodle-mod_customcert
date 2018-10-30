@@ -65,7 +65,7 @@ class plugin_manager {
         } else if ($action == 'movedown' && $plugin != null) {
             $action = $this->move_plugin($plugin, 'down');
         }
-        
+
         if ($action == 'view') {
             $this->view_plugins_table();
         }
@@ -81,7 +81,6 @@ class plugin_manager {
         require_once($CFG->libdir . '/tablelib.php');
 
         // Set up the table.
-        $this->view_header();
         $table = new \flexible_table('pluginsadminttable');
         $table->define_baseurl($this->pageurl);
         $table->define_columns(array('pluginname', 'version', 'hideshow', 'order', 'settings'));
@@ -114,7 +113,7 @@ class plugin_manager {
             if (!$idx == 0) {
                 $movelinks .= $this->format_icon_link('moveup', $plugin, 't/up', get_string('up'));
             } else {
-                $movelinks .= $OUTPUT->spacer(array('width'=>16));
+                $movelinks .= $OUTPUT->spacer(array('width' => 16));
             }
             if ($idx != count($plugins) - 1) {
                 $movelinks .= $this->format_icon_link('movedown', $plugin, 't/down', get_string('down'));
@@ -133,30 +132,6 @@ class plugin_manager {
         }
 
         $table->finish_output();
-        $this->view_footer();
-    }
-
-    /**
-     * Write the page header
-     *
-     * @return None
-     */
-    private function view_header() {
-        global $OUTPUT;
-        \admin_externalpage_setup('manageelementplugins');
-        // Print the page heading.
-        echo $OUTPUT->header();
-        echo $OUTPUT->heading(get_string('manageelementplugins', 'customcert'));
-    }
-
-    /**
-     * Write the page footer
-     *
-     * @return None
-     */
-    private function view_footer() {
-        global $OUTPUT;
-        echo $OUTPUT->footer();
     }
 
     /**
@@ -175,24 +150,20 @@ class plugin_manager {
      * Hide this plugin.
      *
      * @param string $plugin - The plugin to hide
-     * @return string The next page to display
      */
     public function hide_plugin($plugin) {
         set_config('disabled', 1, 'customcertelement_' . $plugin);
         \core_plugin_manager::reset_caches();
-        return 'view';
     }
 
     /**
      * Show this plugin.
      *
      * @param string $plugin - The plugin to show
-     * @return string The next page to display
      */
     public function show_plugin($plugin) {
         set_config('disabled', 0, 'customcertelement_' . $plugin);
         \core_plugin_manager::reset_caches();
-        return 'view';
     }
 
     /**
@@ -211,7 +182,7 @@ class plugin_manager {
                 $idx = 0;
             }
             while (array_key_exists($idx, $result)) {
-                $idx +=1;
+                $idx += 1;
             }
             $result[$idx] = $name;
         }
@@ -235,7 +206,7 @@ class plugin_manager {
         $url = $this->pageurl;
 
         return $OUTPUT->action_icon(new \moodle_url($url,
-                array('action' => $action, 'plugin'=> $plugin, 'sesskey' => \sesskey())),
+                array('action' => $action, 'plugin' => $plugin, 'sesskey' => \sesskey())),
                 new \pix_icon($icon, $alt, 'moodle', array('title' => $alt)),
                 null, array('title' => $alt)) . ' ';
     }
@@ -283,6 +254,5 @@ class plugin_manager {
         foreach ($plugins as $key => $plugin) {
             set_config('sortorder', $key, 'customcertelement_' . $plugin);
         }
-        return 'view';
     }
- }
+}

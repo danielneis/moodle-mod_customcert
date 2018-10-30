@@ -35,5 +35,12 @@ $subtype = 'element';
 
 $pluginmanager = new \mod_customcert\plugin_manager();
 
+\admin_externalpage_setup('manageelementplugins');
+// Print the page heading.
+echo $OUTPUT->header();
+echo $OUTPUT->heading(get_string('manageelementplugins', 'customcert'));
+
 // Print the page heading.
 $pluginmanager->execute($action, $plugin);
+
+echo $OUTPUT->footer();

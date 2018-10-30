@@ -436,13 +436,7 @@ class certificate {
 
         // Insert the record into the database.
         if ($issue->id = $DB->insert_record('customcert_issues', $issue)) {
-            $params = array(
-                'context' => \context_module::instance($DB->get_field('customcert', 'course', ['id' => $certificateid])),
-                'objectid' => $issue->id,
-            );
-            $event = \mod_customcert\event\certificate_issued::create($params);
-            $event->add_record_snapshot('customcert_issues', $issue);
-            $event->trigger();
+            \mod_customcert\event\certificate_issued::create_from_issue($certificateid, $issue)->trigger();
         }
 
         return $issue->id;
@@ -467,5 +461,15 @@ class certificate {
         }
 
         return $code;
+    }
+
+    /**
+     * Returns the \context_module of a given certificate
+     *
+     * @param int $certificateid
+     * @return \context_module
+     */
+    public static function get_context($certificateid) {
+        return \context_module::instance(get_coursemodule_from_instance('customcert', $certificateid)->id);
     }
 }

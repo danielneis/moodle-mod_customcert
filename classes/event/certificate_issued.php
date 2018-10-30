@@ -47,6 +47,24 @@ class certificate_issued extends \core\event\base {
     }
 
     /**
+     * Create instance of event.
+     *
+     * @param int $certificateid
+     * @param \stdClass $issue
+     * @return certificate_issued
+     */
+    public static function create_from_issue($certificateid, \stdClass $issue) {
+        $data = array(
+            'context' => \mod_customcert\certificate::get_context($certificateid),
+            'objectid' => $issue->id,
+            'relateduserid' => $issue->userid
+        );
+        $event = self::create($data);
+        $event->add_record_snapshot('customcert_issues', $issue);
+        return $event;
+    }
+
+    /**
      * Returns description of what happened.
      *
      * @return string

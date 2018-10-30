@@ -65,6 +65,23 @@ class template_created extends \core\event\base {
     }
 
     /**
+     * Create instance of event.
+     *
+     * @param int $contextid
+     * @param \stdClass $template
+     * @return template_created
+     */
+    public static function create_from_template($contextid, \stdClass $template) {
+        $data = array(
+            'context' => \context::instance_by_id($contextid),
+            'objectid' => $template->id,
+        );
+        $event = self::create($data);
+        $event->add_record_snapshot('customcert_templates', $template);
+        return $event;
+    }
+
+    /**
      * Get URL related to the action
      *
      * @return \moodle_url

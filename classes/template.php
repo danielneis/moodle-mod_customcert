@@ -74,12 +74,7 @@ class template {
         $savedata->name = $data->name;
         $savedata->timemodified = time();
 
-        $params = array(
-            'context' => \context::instance_by_id($this->contextid),
-            'objectid' => $this->id,
-        );
-        $event = \mod_customcert\event\template_updated::create($params);
-        $event->trigger();
+        \mod_customcert\event\template_updated::create_from_template($this)->trigger();
 
         $DB->update_record('customcert_templates', $savedata);
     }
@@ -180,12 +175,8 @@ class template {
             return false;
         }
 
-        $params = array(
-            'context' => \context::instance_by_id($this->contextid),
-            'objectid' => $this->id,
-        );
-        $event = \mod_customcert\event\template_deleted::create($params);
-        $event->trigger();
+        \mod_customcert\event\template_deleted::create_from_template($this)->trigger();
+
         // Now, finally delete the actual template.
         if (!$DB->delete_records('customcert_templates', array('id' => $this->id))) {
             return false;
@@ -483,13 +474,7 @@ class template {
         $template->timemodified = $template->timecreated;
         $template->id = $DB->insert_record('customcert_templates', $template);
 
-        $params = array(
-            'context' => \context::instance_by_id($contextid),
-            'objectid' => $template->id,
-        );
-        $event = \mod_customcert\event\template_created::create($params);
-        $event->add_record_snapshot('customcert_templates', $template);
-        $event->trigger();
+        \mod_customcert\event\template_created::create_from_template($contextid, $template)->trigger();
 
         return new \mod_customcert\template($template);
     }

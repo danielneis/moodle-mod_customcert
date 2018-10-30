@@ -84,14 +84,7 @@ if ($deleteissue && $canmanage && confirm_sesskey()) {
     }
 
     $issue = $DB->get_record('customcert_issues', ['id' => $deleteissue]);
-    $params = array(
-        'context' => \context_module::instance($DB->get_field('customcert', 'course', ['id' => $customcert->id])),
-        'objectid' => $customcert->id,
-        'relateduserid' => $issue->userid
-    );
-    $event = \mod_customcert\event\certificate_revoked::create($params);
-    $event->add_record_snapshot('customcert_issues', $issue);
-    $event->trigger();
+    \mod_customcert\event\certificate_revoked::create_from_issue($customcert->id, $issue)->trigger();
 
     // Delete the issue.
     $DB->delete_records('customcert_issues', array('id' => $deleteissue, 'customcertid' => $customcert->id));

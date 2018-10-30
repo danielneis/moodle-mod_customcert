@@ -73,4 +73,22 @@ class certificate_verified extends \core\event\base {
     public function get_url() {
         return new \moodle_url('/mod/customcert/edit.php', array('tid' => $this->objectid));
     }
+
+    /**
+     * Create instance of event.
+     *
+     * @param int $certificateid
+     * @param \stdClass $issue
+     * @return certificate_issued
+     */
+    public static function create_from_issue(\stdClass $issue) {
+        $data = array(
+            'context' => \mod_customcert\certificate::get_context($issue->certificateid),
+            'objectid' => $issue->id,
+            'relateduserid' => $issue->userid
+        );
+        $event = self::create($data);
+        $event->add_record_snapshot('customcert_issues', $issue);
+        return $event;
+    }
 }

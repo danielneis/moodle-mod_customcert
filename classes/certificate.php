@@ -438,7 +438,7 @@ class certificate {
         if ($issue->id = $DB->insert_record('customcert_issues', $issue)) {
             $params = array(
                 'context' => \context_module::instance($DB->get_field('customcert', 'course', ['id' => $certificateid])),
-                'objectid' => $certificateid,
+                'objectid' => $issue->id,
             );
             $event = \mod_customcert\event\certificate_issued::create($params);
             $event->add_record_snapshot('customcert_issues', $issue);

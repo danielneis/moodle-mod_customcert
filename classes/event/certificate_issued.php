@@ -52,7 +52,7 @@ class certificate_issued extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The certificate with id '$this->objectid' has been issued for user with id '$this->userid'.";
+        return "The certificate issue with id '$this->objectid' has been created for user with id '$this->userid'.";
     }
 
     /**
